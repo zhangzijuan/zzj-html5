@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>手机摇一摇</title>
+	<!-- 强制让文档的宽度与设备的宽度保持1:1，并且文档最大的宽度比例是1.0，且不允许用户点击屏幕放大浏览 -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js">
+  <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js">
+	<style type="text/css">
+		body,.container,img{
+			width: 100%;
+			height: 100%;
+		}
+		.shake-img{
+			margin-top: 40%;
+		}
+	</style>
+</head>
+<body>
+<div class="container col-xs-12 text-center">
+	<div class="shake-img col-xs-12">
+		<img src="../image/shake/shake.jpg">
+	</div>
+	<span class="shake-tip" style="display:none;">手机摇动了</span>
+</div>
+<script type="text/javascript">
+	$(function(){
+		if(window.DeviceMotionEvent){
+			window.addEventListiener('devicemotion',deviceMotionHandler,false);
+		}else{
+			alert('该浏览器不支持devicemotion事件');
+		}
+
+		var shake_threshold = 2000;
+		var last_update = 0;
+		var x,
+			y,
+			z,
+			last_x,
+			last_y,
+			last_z;
+
+		function deviceMotionHandler (eventData){
+			var acceleration = eventData.accelerationIncludingGravity;
+			var currTime = new Date().getTime();
+			if(currTime - last_update > 100){
+				var diffTime = currTime- last_update;
+				last_update = currTime;
+				x = acceleration.x;
+				y = acceleration.y;
+				z = acceleration.z;
+				var speed = Math.abs(x+y+z-last_x-last_y-last_z)/diffTime*10000;
+			    if(speed > shake_threshold){
+			    	alert('shake');
+			    	$('.shake-tip').show();
+			    }
+			    last_x = x;
+			    last_y = y;
+			    last_z = z;
+			}
+
+		}
+	})
+</script>
+</body>
+</html>
